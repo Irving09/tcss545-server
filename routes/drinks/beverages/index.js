@@ -3,12 +3,20 @@
 const express = require('express');
 const router = express.Router();
 
+const refreshers = require('./refreshers');
+const expresso = require('./expresso');
+
+router.use('/refreshers', refreshers);
+router.use('/expresso', expresso);
+
 router.get('/', function(req, res, next) {
   res.json({
-    beverages: [
-      'item from db1',
-      'item from db2',
-      'item from db3'
+    types: [
+      'refreshers',
+      'evolution-fresh',
+      'iced-coffee',
+      'iced-tea',
+      'smoothies',
     ]
   });
 });
