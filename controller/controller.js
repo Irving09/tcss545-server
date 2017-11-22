@@ -1,7 +1,7 @@
 'use strict';
 
 /*
-config looks like this
+config.json
 {
   "connectionLimit": 10,
   "debug": false,
@@ -10,12 +10,22 @@ config looks like this
   "user": "root",
   "password": "<YOUR PASSWORD HERE>",
   "database": "tcss545"
-  ==> db schema, i created a schema from my machine and named it tcss545,
-  but feel free to name it anything you want and decide what it should be later on
 }
 */
 const config = require('../config.json');
 
+/*
+  =======SAMPLE TABLE=======
+  CREATE TABLE `Offering` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL,
+    `description` varchar(255) DEFAULT NULL,
+    `price` decimal(12,2) unsigned NOT NULL,
+    `offeringTypeId` int(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idnew_table_UNIQUE` (`id`)
+  ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+*/
 const mysql = require('mysql');
 const connection = mysql.createConnection(config);
 
@@ -26,20 +36,14 @@ connection.connect(function(err) {
   else
     console.log('connected');
 
-  connection.query('select * from ships', function(err, results) {
+  connection.query('select * from offering where name like %cool%', function(err, results) {
     if (err) {
       console.log(err);
     } else {
       connection.end();
 
       results.forEach(row => {
-        let record = {
-          ship: row['ship'],
-          class: row['class'],
-          launched: row['launched']
-        };
-
-        console.log(record);
+        console.log(JSON.stringify(row));
       });
     }
   })
