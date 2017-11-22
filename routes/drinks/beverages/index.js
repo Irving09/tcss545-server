@@ -1,25 +1,13 @@
 'use strict';
 
 const express = require('express');
+const Controller = require('./controller');
+
 const router = express.Router();
 
-const refreshers = require('./refreshers');
-const expresso = require('./expresso');
-
-router.use('/refreshers', refreshers);
-router.use('/expresso', expresso);
-
-router.get('/', function(req, res, next) {
-  res.json({
-    types: [
-      'refreshers',
-      'evolution-fresh',
-      'iced-coffee',
-      'iced-tea',
-      'smoothies',
-    ]
-  });
-});
+router.get('/', Controller.getBeveragesTypes);
+router.get('/refreshers', Controller.getRefreshers);
+router.get('/expresso', Controller.getExpresso);
 
 module.exports = router;
 
