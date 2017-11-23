@@ -1,14 +1,9 @@
 'use strict';
 
+const Adapter = require('../../../adapters/drinks');
+
 exports.getBeveragesTypes = (req, res, next) => {
-  res.json({
-    types: [
-      'expresso',
-      'refreshers',
-      'chocolate',
-      'frappuccino-blended'
-    ]
-  });
+  Adapter.getBeverages((err, data) => res.json(data));
 };
 
 exports.getExpresso = (req, res, next) => {
