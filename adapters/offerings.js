@@ -12,7 +12,7 @@ config.json
   "database": "tcss545"
 }
 */
-const config = require('./dbConfig.json');
+const config = require('../config.json');
 
 /*
   =======SAMPLE TABLE=======
@@ -29,7 +29,7 @@ const config = require('./dbConfig.json');
 const mysql = require('mysql');
 // const dbClient = mysql.createConnection(config);
 
-exports.getBeverages = (callback) => {
+exports.getOfferings = (callback) => {
   /* TODO Uncomment when database is ready
   dbClient.connect((err, connection) => {
     if (err) console.log(err);
@@ -39,12 +39,15 @@ exports.getBeverages = (callback) => {
   });
   */
 
+  // stub ignore
   callback(null, {
-    types: [
-      'refreshers',
-      'espresso',
-      'chocolate',
-      'frappuccino-blended'
+    offerings: [
+      'item from db',
+      'item from db',
+      'item from db',
+      'item from db',
+      'item from db',
+      'item from db'
     ]
   });
 };
