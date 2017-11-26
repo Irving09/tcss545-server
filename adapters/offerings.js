@@ -27,27 +27,29 @@ const config = require('../config.json');
   ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 */
 const mysql = require('mysql');
-// const dbClient = mysql.createConnection(config);
+const dbPool = mysql.createPool(config);
 
-exports.getOfferings = (callback) => {
-  /* TODO Uncomment when database is ready
-  dbClient.connect((err, connection) => {
-    if (err) console.log(err);
-    else console.log('connected', connection);
-
-    dbClient.query('select * from offeringtype', callback);
-  });
+exports.getOfferingsByName = (names, callback) => {
+  /*
+  Sample URL
+  http://localhost:3000/offerings?name=cool&name=lime&name=beverage&offeringType=refreshers&offeringType=beverages
   */
 
-  // stub ignore
-  callback(null, {
-    offerings: [
-      'item from db',
-      'item from db',
-      'item from db',
-      'item from db',
-      'item from db',
-      'item from db'
-    ]
-  });
+  let table = 'Offering';
+  let attr = 'name';
+
+  dbPool.query(searchQuery(names, attr, table), callback);
 };
+
+exports.getOfferingsByTags = (tags, callback) => {
+
+};
+
+function searchQuery(input, attrToSearch, table) {
+  let select = `select * from ${table}`;
+  let conditions = 'where ' + input
+    .map(value => `${attrToSearch} like '%${value}%'`)
+    .join(' and ');
+
+  return input ?  `${select} ${conditions}` : select;
+}
