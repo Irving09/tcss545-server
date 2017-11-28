@@ -12,44 +12,55 @@ config.json
   "database": "tcss545"
 }
 */
-const config = require('../config.json');
-
-/*
-  =======SAMPLE TABLE=======
-  CREATE TABLE `Offering` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `name` varchar(255) NOT NULL,
-    `description` varchar(255) DEFAULT NULL,
-    `price` decimal(12,2) unsigned NOT NULL,
-    `offeringTypeId` int(11) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idnew_table_UNIQUE` (`id`)
-  ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-*/
+const config = require('../db/config.json');
 const mysql = require('mysql');
 const dbPool = mysql.createPool(config);
 
 exports.getOfferingsByName = (names, callback) => {
-  /*
-  Sample URL
-  http://localhost:3000/offerings?name=cool&name=lime&name=beverage&offeringType=refreshers&offeringType=beverages
-  */
+  const query = `
+    select 
+      * 
+    from 
+      offering 
+    where ${buildConditions(names)}`;
 
-  let table = 'Offering';
-  let attr = 'name';
-
-  dbPool.query(searchQuery(names, attr, table), callback);
+  dbPool.query(query, callback);
 };
 
-exports.getOfferingsByTags = (tags, callback) => {
+exports.getOfferingsByType = (types, callback) => {
+  let conditions;
+  if (multiQuery(types)) {
+    conditions = types.map(t => `ot.name like '%${t}%'`).join(' and ');
+  } else {
+    conditions = `ot.name like '${types}'`;
+  }
+
+  let query = `
+    select 
+      o.id, 
+      o.name, 
+      o.description, 
+      o.offeringTypeId 
+    from 
+      offering o, offeringtype ot 
+    where 
+      ${conditions} 
+      and o.offeringTypeId = ot.id`;
+
+  dbPool.query(query, callback);
+};
+
+exports.getOfferingsByTag = (tags, callback) => {
 
 };
 
-function searchQuery(input, attrToSearch, table) {
-  let select = `select * from ${table}`;
-  let conditions = 'where ' + input
-    .map(value => `${attrToSearch} like '%${value}%'`)
-    .join(' and ');
+function buildConditions(params) {
+  if (multiQuery(params))
+    return params.map(t => `name like '%${t}%'`).join(' and ');
+  else
+    return `name like ${params}`;
+}
 
-  return input ?  `${select} ${conditions}` : select;
+function multiQuery(param) {
+  return param instanceof Array;
 }

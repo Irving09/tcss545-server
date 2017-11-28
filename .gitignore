@@ -57,7 +57,7 @@ typings/
 # dotenv environment variables file
 .env
 
-dbConfig.json
+config.json
 
 # intelliJ files
 *.iml
