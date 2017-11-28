@@ -10,7 +10,6 @@ exports.getOfferings = (req, res, next) => {
 
   Promise.all([names, types]).then(function(data) {
     let flat = _.flatMap(data, (group) => group);
-
     let results = {};
 
     flat.forEach(record => {
@@ -25,7 +24,7 @@ exports.getOfferings = (req, res, next) => {
         return {
           name: record['name'],
           description: record['description'],
-          type: record['offeringTypeId'],
+          type: record['type'],
           tags: ['TODO'],
           ingredients: ['TODO']
         }

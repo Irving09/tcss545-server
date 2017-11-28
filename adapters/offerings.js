@@ -17,12 +17,25 @@ const mysql = require('mysql');
 const dbPool = mysql.createPool(config);
 
 exports.getOfferingsByName = (names, callback) => {
+  let conditions;
+  if (multiQuery(names)) {
+    conditions = names.map(t => `o.name like '%${t}%'`).join(' and ');
+  } else {
+    conditions = `o.name like '%${names}%'`;
+  }
+
   const query = `
     select 
-      * 
-    from 
-      offering 
-    where ${buildConditions(names)}`;
+      o.id,
+      o.name,
+      o.description,
+      ot.name as type
+    from
+      offering o,
+      offeringtype ot
+    where
+        ${conditions}
+        and o.id = ot.id`;
 
   dbPool.query(query, callback);
 };
@@ -32,7 +45,7 @@ exports.getOfferingsByType = (types, callback) => {
   if (multiQuery(types)) {
     conditions = types.map(t => `ot.name like '%${t}%'`).join(' and ');
   } else {
-    conditions = `ot.name like '${types}'`;
+    conditions = `ot.name like '%${types}%'`;
   }
 
   let query = `
@@ -40,7 +53,7 @@ exports.getOfferingsByType = (types, callback) => {
       o.id, 
       o.name, 
       o.description, 
-      o.offeringTypeId 
+      ot.name as type
     from 
       offering o, offeringtype ot 
     where 
@@ -51,15 +64,13 @@ exports.getOfferingsByType = (types, callback) => {
 };
 
 exports.getOfferingsByTag = (tags, callback) => {
-
+  let conditions;
+  if (multiQuery(tags)) {
+    conditions = tags.map(t => `ot.name like '%${t}%'`).join(' and ');
+  } else {
+    conditions = `ot.name like '%${tags}%'`;
+  }
 };
-
-function buildConditions(params) {
-  if (multiQuery(params))
-    return params.map(t => `name like '%${t}%'`).join(' and ');
-  else
-    return `name like ${params}`;
-}
 
 function multiQuery(param) {
   return param instanceof Array;
