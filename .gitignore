@@ -58,3 +58,7 @@ typings/
 .env
 
 dbConfig.json
+
+# intelliJ files
+*.iml
+.idea
