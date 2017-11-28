@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS Location (
   id      INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   name    VARCHAR(255) COMMENT 'name of places',
   address VARCHAR(1024),
-  phone   INT
+  phone   VARCHAR(255)
 
 );
 
@@ -87,8 +87,6 @@ CREATE TABLE IF NOT EXISTS LocationOffering (
 
 ALTER TABLE LocationOffering
   ADD FOREIGN KEY (locationId) REFERENCES Location (id);
-ALTER TABLE LocationOffering
-  ADD FOREIGN KEY (offeringPriceId) REFERENCES OfferingPrice (id);
 
 # Offering <--> Ingredient
 
@@ -129,6 +127,8 @@ ALTER TABLE OfferingPrice
   ADD FOREIGN KEY (offeringId) REFERENCES Offering (id);
 ALTER TABLE OfferingPrice
   ADD FOREIGN KEY (offeringSizeId) REFERENCES OfferingSize (id);
+ALTER TABLE LocationOffering
+  ADD FOREIGN KEY (offeringPriceId) REFERENCES OfferingPrice (id);
 
 #########################
 #
