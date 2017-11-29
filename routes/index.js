@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 const offerings = require('./offerings');
+const menu = require('./menu');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -11,5 +12,6 @@ router.get('/', function(req, res, next) {
 });
 
 router.use('/offerings', offerings);
+router.use('/menu', menu);
 
 module.exports = router;
