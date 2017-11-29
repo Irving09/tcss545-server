@@ -19,3 +19,15 @@ exports.findOfferingTypes = function () {
         return rows.map(offeringTypeMapper);
     });
 };
+
+exports.findLocationOfferingTypes = function (locationId) {
+    return base.query(`SELECT DISTINCT OfferingType.* FROM
+    Location
+    INNER JOIN LocationOffering ON (Location.id = LocationOffering.locationId)
+    INNER JOIN OfferingPrice ON (OfferingPrice.id = LocationOffering.offeringPriceId)
+    INNER JOIN Offering ON (Offering.id = OfferingPrice.offeringId)
+    INNER JOIN OfferingType ON (OfferingType.id = Offering.offeringTypeId)
+    WHERE Location.id = ${locationId}`).then(rows => {
+        return rows.map(offeringTypeMapper);
+    });
+};
