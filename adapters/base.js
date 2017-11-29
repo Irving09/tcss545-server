@@ -1,30 +1,33 @@
+'use strict';
+
 const config = require('../db/config.json');
-const Q = require('q');
+const Promise = require('bluebird');
 const mysql = require('mysql');
+// const dbPool = Promise.promisifyAll(mysql.createPool(config));
 const dbPool = mysql.createPool(config);
 
-var BaseDb = {
-    query: function (query) {
-        const deferred = Q.defer();
-        dbPool.query(query, (err, rows) => {
-            if (err) {
-                deferred.reject(err);
-            } else {
-                deferred.resolve(rows);
-            }
-        });
-        return deferred.promise;
-    },
-    queryOne: function (query) {
-        return BaseDb.query(query).then(rows => {
-            let result = rows.map(item => item);
-            if (result.length === 1) {
-                return result[0];
-            } else {
-                return Q.reject();
-            }
-        });
-    }
+const BaseDb = {
+
+  query: function (query) {
+    return new Promise((resolve, reject) => {
+      dbPool.query(query, (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
+    });
+  },
+
+  queryOne: function (query) {
+    return BaseDb.query(query).then(rows => {
+      let result = rows.map(item => item);
+      if (result.length === 1) {
+        return result[0];
+      } else {
+        return Promise.rejected();
+      }
+    });
+  }
+
 };
 
 module.exports = BaseDb;
