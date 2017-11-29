@@ -16,61 +16,46 @@ const config = require('../db/config.json');
 const mysql = require('mysql');
 const dbPool = mysql.createPool(config);
 
-exports.getOfferingsByName = (names, callback) => {
-  let conditions;
-  if (multiQuery(names)) {
-    conditions = names.map(t => `o.name like '%${t}%'`).join(' and ');
-  } else {
-    conditions = `o.name like '%${names}%'`;
-  }
-
-  const query = `
-    select 
-      o.id,
-      o.name,
-      o.description,
-      ot.name as type
-    from
-      offering o,
-      offeringtype ot
-    where
-        ${conditions}
-        and o.id = ot.id`;
-
-  dbPool.query(query, callback);
+exports.getOfferings = (queryParams, callback) => {
+  dbPool.query(buildQuery(queryParams), callback);
 };
 
-exports.getOfferingsByType = (types, callback) => {
-  let conditions;
-  if (multiQuery(types)) {
-    conditions = types.map(t => `ot.name like '%${t}%'`).join(' and ');
-  } else {
-    conditions = `ot.name like '%${types}%'`;
+function buildQuery(params) {
+  let queryBuilder = `
+  select 
+    offr.id,
+    offr.name,
+    offr.description,
+    type.name as type,
+    group_concat(ingr.name) as ingredients,
+    group_concat(tag.name) as tags
+  from
+    ingredient ingr,
+    offeringingredient oi,
+    offering offr,
+    offeringtype type,
+    tag tag,
+    offeringtag otag
+  where
+    offr.id = oi.offeringId
+    and otag.tagId = tag.id
+    and offr.id = otag.offeringId
+    and type.id = offr.offeringTypeId
+    and ingr.id = oi.ingredientId`;
+
+  let condition;
+  for (let param of Object.keys(params)) {
+    let values = params[param];
+    if (multiQuery(values))
+      condition = values.map(value => `lower(${param}.name) like '%${value}%'`).join(' or ');
+    else
+      condition = `(lower(${param}.name) like '%${values}%')`;
+
+    queryBuilder = `${queryBuilder} and (${condition})`;
   }
 
-  let query = `
-    select 
-      o.id, 
-      o.name, 
-      o.description, 
-      ot.name as type
-    from 
-      offering o, offeringtype ot 
-    where 
-      ${conditions} 
-      and o.offeringTypeId = ot.id`;
-
-  dbPool.query(query, callback);
-};
-
-exports.getOfferingsByTag = (tags, callback) => {
-  let conditions;
-  if (multiQuery(tags)) {
-    conditions = tags.map(t => `ot.name like '%${t}%'`).join(' and ');
-  } else {
-    conditions = `ot.name like '%${tags}%'`;
-  }
-};
+  return `${queryBuilder} group by offr.id order by offr.id`;
+}
 
 function multiQuery(param) {
   return param instanceof Array;
