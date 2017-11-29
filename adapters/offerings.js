@@ -20,3 +20,8 @@ exports.findOfferings = function () {
         return rows.map(offeringMapper);
     });
 };
+
+exports.findOfferingsForType = (typeId) => base.query(`SELECT * FROM Offering WHERE offeringTypeId = ${typeId}`)
+    .then(rows => {
+        return rows.map(offeringMapper)
+    });
