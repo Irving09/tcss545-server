@@ -9,10 +9,15 @@ const dbPool = mysql.createPool(config);
 const BaseDb = {
 
   query: function (query) {
+    console.log(query);
     return new Promise((resolve, reject) => {
       dbPool.query(query, (err, rows) => {
-        if (err) reject(err);
-        else resolve(rows);
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          resolve(rows);
+        }
       });
     });
   },

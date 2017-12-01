@@ -2,9 +2,6 @@
 
 const OfferingAdapter = require('../../adapters/offerings');
 const OfferingTypeAdapter = require('../../adapters/offeringTypes');
-const LocationAdapter = require('../../adapters/locations');
-const TagAdapter = require('../../adapters/tags');
-const IngredientAdapter = require('../../adapters/ingredients');
 const PricesAdapter = require('../../adapters/offeringPrices');
 const SizesAdapter = require('../../adapters/offeringSizes');
 const Q = require('q');
@@ -36,6 +33,7 @@ exports.getMenuForLocation = (req, res) => {
             return Q.all(types.map(type => OfferingAdapter.findOfferingsForTypeAndLocation(type.id, locationId).then(offerings => menu.push({
                 id: type.id,
                 name: type.name,
+                description: type.description,
                 offerings: offerings.map(offering => {
                     delete offering.offeringTypeId;
                     return offering
