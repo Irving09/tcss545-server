@@ -17,6 +17,7 @@ exports.getMenu = (req, res) => {
             return Q.all(types.map(type => OfferingAdapter.findOfferingsForType(type.id).then(offerings => menu.push({
                 id: type.id,
                 name: type.name,
+                description: type.description,
                 offerings: offerings.map(offering => {
                     delete offering.offeringTypeId;
                     return offering
