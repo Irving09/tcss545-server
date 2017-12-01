@@ -57,43 +57,46 @@ let searchQuery = request => {
     }
     let sql = 'SELECT DISTINCT Offering.* FROM Offering';
     let criterion = request.searchType === 'ALL' ? 'AND' : 'OR';
-    sql += ' INNER JOIN OfferingType ON (OfferingType.id = Offering.offeringTypeId)';
+    sql += '\n\tINNER JOIN OfferingType ON (OfferingType.id = Offering.offeringTypeId)';
     if (!emptyArray(request.tags)) {
-        sql += ' INNER JOIN OfferingTag ON (OfferingTag.offeringId = Offering.id)';
-        sql += ' INNER JOIN Tag ON (Tag.Id = OfferingTag.tagId)';
+        sql += '\n\tINNER JOIN OfferingTag ON (OfferingTag.offeringId = Offering.id)';
+        sql += '\n\tINNER JOIN Tag ON (Tag.Id = OfferingTag.tagId)';
     }
     if (!emptyArray(request.ingredients)) {
-        sql += ' INNER JOIN OfferingIngredient ON (OfferingIngredient.offeringId = Offering.id)';
-        sql += ' INNER JOIN Ingredient ON (Ingredient.Id = OfferingIngredient.ingredientId)';
+        sql += '\n\tINNER JOIN OfferingIngredient ON (OfferingIngredient.offeringId = Offering.id)';
+        sql += '\n\tINNER JOIN Ingredient ON (Ingredient.Id = OfferingIngredient.ingredientId)';
     }
     let whereClause = '';
     let first = true;
     if (request.searchType === 'ALL' || !emptyString(request.name)) {
         first = false;
-        whereClause += ' Offering.name LIKE \'%' + request.name + '%\'';
+        whereClause += '\n\tOffering.name LIKE \'%' + request.name + '%\'';
     }
-    if (request.searchType === 'ALL' || !emptyString(request.name)) {
+    if (request.searchType === 'ALL' || !emptyString(request.type)) {
+        whereClause += '\n\t';
         if (!first) {
-            whereClause += ' ' + criterion;
+            whereClause += criterion;
         }
         first = false;
         whereClause += ' OfferingType.name LIKE \'%' + request.type + '%\'';
     }
     if (!emptyArray(request.tags)) {
+        whereClause += '\n\t';
         if (!first) {
-            whereClause += ' ' + criterion;
+            whereClause += criterion;
         }
         first = false;
         whereClause += ' LOWER(Tag.name) IN (' + listValues(request.tags) + ')';
     }
     if (!emptyArray(request.ingredients)) {
+        whereClause += '\n\t';
         if (!first) {
-            whereClause += ' ' + criterion;
+            whereClause += criterion;
         }
         whereClause += ' LOWER(Ingredient.name) IN (' + listValues(request.ingredients) + ')';
     }
-    if (whereClause.trim() === '') {
-        sql += ' WHERE' + whereClause;
+    if (whereClause.trim() !== '') {
+        sql += '\nWHERE' + whereClause;
     }
     sql += ';';
     return sql;

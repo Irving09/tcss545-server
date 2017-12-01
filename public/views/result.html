@@ -1,5 +1,6 @@
 <h3 class="page-header border border-top-0 border-left-0 border-right-0 border-dark">
     Search Results
+    <small class="text-muted d-none d-sm-inline">&mdash; Found {{result.length}} item(s)</small>
     <div class="row float-right">
         <a href="#!/search" class="col float-right text-muted" title="Edit this search"><i class="fa fa-pencil"></i></a>
         <a href="javascript:void(0)" class="col float-right text-muted" ng-click="searchFor(search)" title="Refresh search results"><i class="fa fa-refresh"></i></a>
@@ -22,7 +23,7 @@
 <div class="list-group">
     <a ng-href="#!/offerings/{{item.id}}" class="list-group-item list-group-item-action flex-column align-items-start" ng-repeat="item in result">
         <div class="row">
-            <div class="col-sm-1 display-4 text-muted">
+            <div class="col-sm-1 display-4 text-muted d-none d-sm-inline-block">
                 <i class="fa fa-coffee"></i>
             </div>
             <div class="col-sm-11">
@@ -31,6 +32,10 @@
                     <small class="text-info">{{item.locations.length}} <i class="fa fa-map"></i></small>
                 </div>
                 <p class="mb-1">{{item.description}}</p>
+                <p>
+                    <span class="badge badge-primary">{{item.type.name}}</span>
+                    <span class="badge badge-secondary mr-1 d-none d-sm-inline-block" ng-repeat="tag in item.tags">#{{tag.name}}</span>
+                </p>
             </div>
         </div>
         <div class="clearfix"></div>
