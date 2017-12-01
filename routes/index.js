@@ -7,13 +7,8 @@ const offerings = require('./offerings');
 const menu = require('./menu');
 const locations = require('./locations');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Starbucks Clone Server' });
-});
-
-router.use('/offerings', offerings);
-router.use('/menu', menu);
-router.use('/locations', locations);
+router.use('/api/rest/v1/offerings', offerings);
+router.use('/api/rest/v1/menu', menu);
+router.use('/api/rest/v1/locations', locations);
 
 module.exports = router;
