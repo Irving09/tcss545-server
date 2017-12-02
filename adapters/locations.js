@@ -26,11 +26,7 @@ exports.getAllLocations = () => {
 };
 
 exports.findOfferingLocations = function (offeringId) {
-  return base.query(`SELECT DISTINCT Location.* FROM
-    Location
-    INNER JOIN LocationOffering ON (Location.id = LocationOffering.locationId)
-    INNER JOIN OfferingPrice ON (OfferingPrice.id = LocationOffering.offeringPriceId)
-    WHERE OfferingPrice.offeringId = ${offeringId};`).then(rows => {
-    return rows.map(locationMapper);
+  return base.query(`CALL FindOfferingLocations(${offeringId});`).then(rows => {
+    return rows[0].map(locationMapper);
   });
 };
