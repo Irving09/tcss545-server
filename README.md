@@ -42,6 +42,14 @@ To run the server, you can run the following:
 npm start
 ````
 
+### Running the tests
+
+To run the tests, you can run the following:
+
+````bash
+npm test
+````
+
 This will start the application on port `3000` on your local. Point your browser to http://localhost:3000 to view the application.
 
 ## Using the application
