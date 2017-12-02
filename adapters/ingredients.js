@@ -19,6 +19,6 @@ exports.findIngredientByName = function (id, callback) {
 
 exports.findOfferingIngredients = function (offeringId) {
     return base.query(`CALL FindOfferingIngredients(${offeringId});`).then(rows => {
-        return rows.map(ingredientMapper);
+        return rows[0].map(ingredientMapper);
     });
 };
