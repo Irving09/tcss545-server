@@ -16,8 +16,11 @@ exports.findOfferingPrice = (id) => {
 };
 
 exports.findOfferingPricesForOffering = (offeringId) => {
-    return base.query(`CALL FindOfferingPricesForOffering(${offeringId});`).then(rows => {
-        return rows[0].map(offeringPriceMapper);
+    return base.query(`SELECT OfferingPrice.* FROM
+    OfferingPrice
+    INNER JOIN Offering ON (Offering.id = OfferingPrice.offeringId)
+    WHERE Offering.id = ${offeringId};`).then(rows => {
+        return rows.map(offeringPriceMapper);
     });
 };
 

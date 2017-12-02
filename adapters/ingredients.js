@@ -18,7 +18,10 @@ exports.findIngredientByName = function (id, callback) {
 };
 
 exports.findOfferingIngredients = function (offeringId) {
-    return base.query(`CALL FindOfferingIngredients(${offeringId});`).then(rows => {
-        return rows[0].map(ingredientMapper);
+    return base.query(`SELECT DISTINCT Ingredient.* FROM
+    Ingredient
+    INNER JOIN OfferingIngredient ON (Ingredient.id = OfferingIngredient.ingredientId)
+    WHERE OfferingIngredient.offeringId = ${offeringId};`).then(rows => {
+        return rows.map(ingredientMapper);
     });
 };

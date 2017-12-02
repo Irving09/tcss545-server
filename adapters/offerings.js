@@ -26,10 +26,13 @@ exports.findOfferingsForType = (typeId) => base.query(`SELECT * FROM Offering WH
         return rows.map(offeringMapper)
     });
 
-exports.findOfferingsForTypeAndLocation = (typeId, locationId) => base
-    .query(`CALL FindOfferingsForTypeAndLocation(${typeId}, ${locationId});`)
+exports.findOfferingsForTypeAndLocation = (typeId, locationId) => base.query(`SELECT DISTINCT Offering.* FROM
+    LocationOffering
+    INNER JOIN OfferingPrice ON (LocationOffering.offeringPriceId = OfferingPrice.id)
+    INNER JOIN Offering ON (Offering.id = OfferingPrice.offeringId)
+WHERE LocationOffering.locationId = ${locationId} AND Offering.offeringTypeId = ${typeId};`)
     .then(rows => {
-        return rows[0].map(offeringMapper)
+        return rows.map(offeringMapper)
     });
 
 exports.findByQuery = (request) =>
