@@ -56,3 +56,17 @@ exports.getOffering = (req, res) => {
     .then(offeringMapper, () => res.status(404).send('Not Found'))
     .then((offering) => res.json(offering), () => res.status(500).send('Internal Server Error'))
 };
+
+exports.searchOfferings = (req, res) => {
+  let request = req.body;
+  if (!request || !request.searchType) {
+    res.status(416).send('Bad Request');
+  }
+  if (request.searchType === 'ALL' || request.searchType === 'ANY') {
+    OfferingAdapter.findByQuery(request)
+      .then(offerings => Promise.all(offerings.map(offeringMapper)), () => res.status(400).send('Bad Request'))
+      .then(offerings => res.json(offerings), (error) => {console.error(error); res.status(500).send('Internal Server Error')});
+  } else {
+    res.status(400).send('Bad Request');
+  }
+};
