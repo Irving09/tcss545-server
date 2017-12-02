@@ -1,3 +1,5 @@
+<div ng-if="!offering || !offering.name">Loading &hellip;</div>
+<div ng-if="offering && offering.name">
 <h3 class="page-header border border-top-0 border-left-0 border-right-0 border-dark">
     {{offering.name}}
     <i class="fa fa-coffee float-right"></i>
@@ -19,3 +21,4 @@
         <a ng-href="#!/locations/{{location.id}}"><i class="fa fa-map-marker"></i> {{location.name}}</a>
     </li>
 </ul>
+</div>

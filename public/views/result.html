@@ -20,6 +20,7 @@
     <li ng-repeat="ingredient in search.ingredients" class="d-inline-block badge badge-pill badge-info"><i class="fa fa-pagelines"></i> {{ingredient | lowercase}}
         <i class="fa fa-close cursor-pointer" ng-click="search.ingredients.splice($index, 1); searchFor({searchType:search.searchType,name:search.name,type:search.type,tags:search.tags,ingredients:search.ingredients})"></i></li>
 </ul>
+<div ng-if="!result || !result.length">Loading &hellip;</div>
 <div class="list-group">
     <a ng-href="#!/offerings/{{item.id}}" class="list-group-item list-group-item-action flex-column align-items-start" ng-repeat="item in result">
         <div class="row">

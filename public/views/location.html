@@ -1,3 +1,4 @@
+<div ng-if="location && location.name">
 <h3 class="page-header border border-top-0 border-left-0 border-right-0 border-dark">
     {{location.name}}
     <i class="fa fa-map-marker float-right"></i>
@@ -15,8 +16,10 @@
         </div>
     </div>
 </div>
+</div>
 <div class="container">
     <h4>Menu</h4>
+    <div ng-if="!menu || !menu.length">Loading &hellip;</div>
     <div class="row">
         <div class="card ml-1 mb-1 bg-info" style="width: 20rem;" ng-repeat="category in menu">
             <div class="card-body">
@@ -27,7 +30,7 @@
                 <li class="list-group-item" ng-repeat="item in category.offerings">
                     <a href="javascript:void(0)" ng-click="searchFor({name:item.name})" class="text-dark">
                         {{item.name}}
-                        <div class="offset-sm-3" ng-repeat="price in item.prices | orderBy:'size.oz'">
+                        <div class="offset-sm-3" ng-repeat="price in item.prices">
                             <span class="text-muted">{{price.size.name}} <small>~({{price.size.oz}}oz)</small></span>
                             <span class="float-right badge badge-pill">${{price.price}}</span>
                         </div>

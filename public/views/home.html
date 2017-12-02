@@ -1,5 +1,6 @@
 <div class="row container">
-    <div class="card ml-1 mb-1 bg-info" style="width: 20rem;" ng-repeat="category in menu">
+    <div ng-if="!menu || !menu.length">Loading &hellip;</div>
+    <div ng-if="menu && menu.length" class="card ml-1 mb-1 bg-info" style="width: 20rem;" ng-repeat="category in menu">
         <div class="card-body">
             <h4 class="card-title"><a class="text-light" href="javascript:void(0)" ng-click="searchFor({type:category.name})"><i class="fa fa-coffee"></i> {{category.name}}</a></h4>
             <p class="card-text text-light">{{category.description}}</p>
