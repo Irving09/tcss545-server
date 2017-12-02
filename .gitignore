@@ -62,3 +62,6 @@ config.json
 # intelliJ files
 *.iml
 .idea
+
+# NPM lock file
+package-lock.json
