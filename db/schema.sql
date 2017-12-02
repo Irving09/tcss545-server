@@ -1246,3 +1246,63 @@ INSERT INTO OfferingIngredient (offeringId, ingredientId) VALUES
   (21,29),
   (21,26),
   (21,37);
+
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`%` PROCEDURE `FindOfferingsForTypeAndLocation`(IN locationId INT, IN typeId INT)
+BEGIN
+	SELECT DISTINCT Offering.* FROM
+		LocationOffering
+		INNER JOIN OfferingPrice ON (LocationOffering.offeringPriceId = OfferingPrice.id)
+		INNER JOIN Offering ON (Offering.id = OfferingPrice.offeringId)
+	WHERE LocationOffering.locationId = locationId AND Offering.offeringTypeId = typeId;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`%` PROCEDURE `FindOfferingPricesForOffering`(IN offeringId INT)
+BEGIN
+	SELECT OfferingPrice.* FROM
+		OfferingPrice
+		INNER JOIN Offering ON (Offering.id = OfferingPrice.offeringId)
+		WHERE Offering.id = offeringId;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`%` PROCEDURE `FindOfferingLocations`(IN offeringId INT)
+BEGIN
+	SELECT DISTINCT Location.* FROM
+		Location
+		INNER JOIN LocationOffering ON (Location.id = LocationOffering.locationId)
+		INNER JOIN OfferingPrice ON (OfferingPrice.id = LocationOffering.offeringPriceId)
+		WHERE OfferingPrice.offeringId = offeringId;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`%` PROCEDURE `FindOfferingIngredients`(IN offeringId INT)
+BEGIN
+	SELECT DISTINCT Ingredient.* FROM
+		Ingredient
+		INNER JOIN OfferingIngredient ON (Ingredient.id = OfferingIngredient.ingredientId)
+		WHERE OfferingIngredient.offeringId = offeringId;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`%` PROCEDURE `FindLocationOfferingTypes`(IN locationId INT)
+BEGIN
+	SELECT DISTINCT OfferingType.* FROM
+		Location
+		INNER JOIN LocationOffering ON (Location.id = LocationOffering.locationId)
+		INNER JOIN OfferingPrice ON (OfferingPrice.id = LocationOffering.offeringPriceId)
+		INNER JOIN Offering ON (Offering.id = OfferingPrice.offeringId)
+		INNER JOIN OfferingType ON (OfferingType.id = Offering.offeringTypeId)
+		WHERE Location.id = locationId;
+END$$
+DELIMITER ;
