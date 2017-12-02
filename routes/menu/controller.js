@@ -4,14 +4,14 @@ const OfferingAdapter = require('../../adapters/offerings');
 const OfferingTypeAdapter = require('../../adapters/offeringTypes');
 const PricesAdapter = require('../../adapters/offeringPrices');
 const SizesAdapter = require('../../adapters/offeringSizes');
-const Q = require('q');
+const Promise = require('bluebird');
 
 
 exports.getMenu = (req, res) => {
     OfferingTypeAdapter.findOfferingTypes()
         .then(types => {
             let menu = [];
-            return Q.all(types.map(type => OfferingAdapter.findOfferingsForType(type.id).then(offerings => menu.push({
+            return Promise.all(types.map(type => OfferingAdapter.findOfferingsForType(type.id).then(offerings => menu.push({
                 id: type.id,
                 name: type.name,
                 description: type.description,
@@ -20,7 +20,7 @@ exports.getMenu = (req, res) => {
                     return offering
                 })
             }))))
-                .then(() => menu, (err) => Q.reject(err));
+                .then(() => menu, (err) => Promise.rejected(err));
         }, () => res.status(404).send('Not Found'))
         .then(menu => res.json(menu), () => res.status(500).send('Internal Server Error'));
 };
@@ -30,7 +30,7 @@ exports.getMenuForLocation = (req, res) => {
     OfferingTypeAdapter.findLocationOfferingTypes(locationId)
         .then(types => {
             let menu = [];
-            return Q.all(types.map(type => OfferingAdapter.findOfferingsForTypeAndLocation(type.id, locationId).then(offerings => menu.push({
+            return Promise.all(types.map(type => OfferingAdapter.findOfferingsForTypeAndLocation(type.id, locationId).then(offerings => menu.push({
                 id: type.id,
                 name: type.name,
                 description: type.description,
@@ -54,11 +54,11 @@ exports.getMenuForLocation = (req, res) => {
                                     }));
                                 });
                                 offering.prices = prices;
-                                return Q.all(sizes);
+                                return Promise.all(sizes);
                             }));
                         });
                     });
-                    return Q.all(loaded).then(() => menu);
+                    return Promise.all(loaded).then(() => menu);
                 })
         }, () => res.status(404).send('Not Found'))
         .then(menu => res.json(menu), () => res.status(500).send('Internal Server Error'));
