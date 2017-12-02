@@ -27,9 +27,9 @@
                 <li class="list-group-item" ng-repeat="item in category.offerings">
                     <a href="javascript:void(0)" ng-click="searchFor({name:item.name})" class="text-dark">
                         {{item.name}}
-                        <div class="offset-sm-3" ng-repeat="size in item.sizes | orderBy:'oz'">
-                            <span class="text-muted">{{size.name}} <small>~({{size.oz}}oz)</small></span>
-                            <span class="float-right badge badge-pill">${{size.price}}</span>
+                        <div class="offset-sm-3" ng-repeat="price in item.prices | orderBy:'size.oz'">
+                            <span class="text-muted">{{price.size.name}} <small>~({{price.size.oz}}oz)</small></span>
+                            <span class="float-right badge badge-pill">${{price.price}}</span>
                         </div>
                     </a>
                 </li>
