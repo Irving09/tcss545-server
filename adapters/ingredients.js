@@ -12,16 +12,13 @@ exports.findIngredient = function (id) {
 };
 
 exports.findIngredientByName = function (id, callback) {
-    dbPool.query(`SELECT * FROM Ingredient WHERE name LIKE '%${id}%';`, callback).then(rows => {
+    base.query(`SELECT * FROM Ingredient WHERE name LIKE '%${id}%';`, callback).then(rows => {
         return rows.map(ingredientMapper);
     });
 };
 
 exports.findOfferingIngredients = function (offeringId) {
-    return base.query(`SELECT DISTINCT Ingredient.* FROM
-    Ingredient
-    INNER JOIN OfferingIngredient ON (Ingredient.id = OfferingIngredient.ingredientId)
-    WHERE OfferingIngredient.offeringId = ${offeringId};`).then(rows => {
-        return rows.map(ingredientMapper);
+    return base.query(`CALL FindOfferingIngredients(${offeringId});`).then(rows => {
+        return rows[0].map(ingredientMapper);
     });
 };
